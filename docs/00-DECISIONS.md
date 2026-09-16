@@ -32,4 +32,6 @@
 | D23 | 模組化 | Modular monolith：依功能切成模組，只能透過 `index.ts` 互相使用，資料表屬於各自的模組，並用 dependency-cruiser / import-linter 自動檢查（見 `architecture/MODULES.md`） | ✅ | 使用者希望程式碼像 React component 一樣可以重用、容易 debug；不拆成真正的 microservice，以免增加部署和除錯的複雜度。 |
 | D24 | 資料表變更 | 資料表結構**只能**透過 Drizzle migration 修改；資料匯入用 `scripts/` 裡的腳本；Drizzle Studio 只用來看資料，或在開發環境改資料 | ✅ | 資料表結構要能重現、能追溯；正式環境的 api 帳號不給修改資料表結構的權限。 |
 | D25 | 改動大小 | 每個任務最多 5 個手寫檔案、約 300 行 | ✅ | 方便檢查、追溯，也方便還原。 |
+| D26 | Lint / 格式化 | TypeScript 全部使用 **Biome**（不用 ESLint + Prettier）；Python 使用 ruff | ✅ | 一個工具同時負責 lint 和格式化，速度快、設定少；Next.js 官方也支援。 |
+| D27 | 供應鏈安全 | 保留 pnpm 的 `minimumReleaseAge`（發布未滿 1 天的版本不安裝），**不加例外** | ✅ | 防止安裝到剛被植入惡意程式碼的新版本。需要最新版時，就等一天。 |
 | D22 | 部署平台 | 還沒定 | 🟡 | 做到第 10 部分再討論；手機要能用相機和定位，所以必須是 HTTPS。 |
