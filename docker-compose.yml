@@ -1,0 +1,83 @@
+# HeartLink local infrastructure.
+# Usage:  cp .env.example .env   then   docker compose up -d
+# Values come from .env (never committed). Ports are bound to 127.0.0.1 so only this Mac can reach them.
+
+name: heartlink
+
+services:
+  postgres:
+    build: ./infrastructure/postgres
+    image: heartlink/postgres:18-postgis3-pgvector0.8.6
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB in .env}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      # PostgreSQL 18 images keep data under /var/lib/postgresql/18/docker, so mount the parent folder.
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    image: redis:8.8.2-alpine
+    restart: unless-stopped
+    command:
+      - redis-server
+      # BullMQ requires noeviction: never silently drop queue data when memory is full.
+      - --maxmemory-policy
+      - noeviction
+      # Append-only file: queued jobs survive a container restart.
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+    environment:
+      # Lets redis-cli (used by the healthcheck) authenticate without putting the password in argv.
+      REDISCLI_AUTH: ${REDIS_PASSWORD}
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6380}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # S3-compatible object storage for photos. Replaces MinIO, whose community images were discontinued (D29).
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.46
+    restart: unless-stopped
+    command:
+      - mini # all-in-one mode (master + volume + filer + S3 + admin UI) for local development
+      - -dir=/data
+      - -bucket=${S3_BUCKET_PHOTOS:-photos} # created on startup if missing
+      - -admin.user=${S3_ADMIN_USER:-admin}
+      - -admin.password=${S3_ADMIN_PASSWORD:?set S3_ADMIN_PASSWORD in .env}
+    environment:
+      # SeaweedFS turns these into an S3 admin identity; requests without valid keys are rejected.
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?set S3_ACCESS_KEY_ID in .env}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?set S3_SECRET_ACCESS_KEY in .env}
+    ports:
+      - "127.0.0.1:${S3_PORT:-8333}:8333" # S3 API
+      - "127.0.0.1:${S3_ADMIN_PORT:-23646}:23646" # admin web UI
+    volumes:
+      - seaweedfs-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8333/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 15s
+
+volumes:
+  postgres-data:
+  redis-data:
+  seaweedfs-data:
