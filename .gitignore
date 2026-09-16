@@ -1,0 +1,34 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# private / real data (public repo!)
+data/*
+!data/.gitkeep
+
+# node
+node_modules/
+.next/
+dist/
+.turbo/
+coverage/
+playwright-report/
+test-results/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+mlruns/
+*.onnx
+*.h5
+*.keras
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
+.claude/settings.local.json
