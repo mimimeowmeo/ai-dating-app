@@ -1,0 +1,22 @@
+#!/bin/sh
+# Blocks pushing code that still contains teaching comments (comment marker followed by U+1F4D8).
+# Enable once per clone:  git config core.hooksPath .githooks
+# Markdown files are excluded: reports may legitimately mention the marker.
+
+set -eu
+
+tag=$(printf '\360\237\223\230')
+pattern="(//|#|--)[[:space:]]*${tag}"
+zero=0000000000000000000000000000000000000000
+status=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue
+  if matches=$(git grep -n -I -E "$pattern" "$local_sha" -- . ':!*.md'); then
+    echo "pre-push: teaching comments (${tag}) found in $local_ref — strip them before pushing:" >&2
+    echo "$matches" >&2
+    status=1
+  fi
+done
+
+exit $status
