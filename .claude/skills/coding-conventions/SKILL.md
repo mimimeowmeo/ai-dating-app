@@ -11,7 +11,7 @@ description: HeartLink coding rules — module boundaries, diff size limits, fil
 
 每個任務的上限：
 - **最多 5 個手寫檔案**，**最多約 300 行**。
-  - 不含自動產生的檔案、lock 檔、migration 產出的檔案，也不含任務紀錄（`docs/tasks/<ID>.md`）和 ROADMAP 的狀態更新。
+  - 不含自動產生的檔案、lock 檔、migration 產出的檔案，也不含任務紀錄（`docs/tasks/<ID>.md`）、ROADMAP 的狀態更新，以及 📘 教學註解行（見 `explain-in-code` skill）。
 - 超過就拆成多個任務，先跟使用者說明怎麼拆。
 - 只改任務範圍內的東西：
   - 不順手重構、不改格式、不改名稱。

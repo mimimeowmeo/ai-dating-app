@@ -32,6 +32,7 @@ description: Run one HeartLink development task (foundation F* or slice S* from 
 
 1. **一句話總結**：這個任務完成後，系統多了什麼能力。
 2. **檔案地圖**：用樹狀圖列出新增或修改的檔案，每個檔案附一句話說明它的角色。
+2.5 **逐檔變更明細**：依照 `pr-change-table` skill 的格式（檔案、行號、🟢🟡🔴、內容、原因；內容較長的拉到表格下方的註解說明）。
 3. **資料流**：一個請求從進來到回應，依序經過哪些檔案（畫成箭頭圖）。
 4. **程式碼導讀**：每個重要的檔案都要貼出關鍵片段，逐段說明：
    - 這段在做什麼、為什麼要這樣寫
@@ -45,13 +46,15 @@ description: Run one HeartLink development task (foundation F* or slice S* from 
 ## 6. 停，等使用者確認後合併
 - 更新 ROADMAP 的狀態
 - 任務一開始就從最新的 `main` 開分支：`task/<ID>-<簡稱>`
-- **在對話裡列出所有改動**：`git diff --stat`，以及每個檔案改了什麼，然後停下來等使用者確認
+- 寫你不熟悉的技術時，程式碼要加上 📘 教學註解（`explain-in-code` skill），讓使用者在本機先看有註解的版本
+- **在對話裡列出所有改動**：`git diff --stat`，加上 `pr-change-table` 格式的表格，然後停下來等使用者確認
 - 使用者確認後，**直接完成整個合併流程**，不需要使用者到 GitHub 上操作：
-  1. commit，訊息格式為 `feat(<範圍>): <ID> <摘要> [REQ-xxx]`
-  2. push，並用 `gh pr create` 開 PR，PR 內容要附上任務報告的連結
-  3. 如果 CI 存在，等 CI 通過；CI 失敗就修好，不能硬合併
-  4. 用 `gh pr merge --squash --delete-branch` 合併，讓一個任務在 `main` 上只有一個 commit
-  5. `git checkout main && git pull`，把本機同步到最新
-  6. 回報 PR 連結和合併結果
+  1. **移除 📘 註解**：依照 `explain-in-code` 第 6 節，先把有註解的版本備份到 `.learn/<ID>/`，再執行移除腳本，重新 `git add`，並重跑驗證
+  2. commit，訊息格式為 `feat(<範圍>): <ID> <摘要> [REQ-xxx]`
+  3. push（pre-push hook 會再檢查一次 📘；**不能用 `--no-verify` 跳過**），並用 `gh pr create` 開 PR，PR 內容依照 `pr-change-table` 格式
+  4. 如果 CI 存在，等 CI 通過；CI 失敗就修好，不能硬合併
+  5. 用 `gh pr merge --squash --delete-branch` 合併，讓一個任務在 `main` 上只有一個 commit
+  6. `git checkout main && git pull`，把本機同步到最新
+  7. 回報 PR 連結和合併結果，並告訴使用者有註解的版本放在 `.learn/<ID>/`
 - 使用者沒有確認就不能合併；使用者要求修改時，改完再列出一次改動
 - **不要自動開始下一個任務**

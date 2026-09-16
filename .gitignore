@@ -32,3 +32,6 @@ mlruns/
 .idea/
 .vscode/
 .claude/settings.local.json
+
+# local-only annotated copies of files with teaching comments (see explain-in-code skill)
+.learn/
