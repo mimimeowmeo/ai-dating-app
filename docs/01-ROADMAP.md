@@ -18,7 +18,7 @@
 
 | 天 | 任務 | 相關部分 | REQ | 狀態 |
 |---|---|---|---|---|
-| D1 | F0 開發環境：Node 24、pnpm、uv、Python 3.12、git、GitHub | 0 | 052 | ⬜ |
+| D1 | F0 開發環境：Node 24、pnpm、uv、Python 3.12、git、GitHub | 0 | 052 | ✅ |
 | D1 | F1 Monorepo 骨架：pnpm workspace、Turborepo、.gitignore、.env.example | 0 | 052 | ⬜ |
 | D1 | F2 Docker：Postgres（PostGIS + pgvector）→ Redis → MinIO，一次加一個 | 0, 4, 5 | — | ⬜ |
 | D2 | F3 四個應用程式骨架：web / api / ai / ai-worker，都要有 `/health` | 0, 1, 3 | — | ⬜ |
