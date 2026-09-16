@@ -42,7 +42,16 @@ description: Run one HeartLink development task (foundation F* or slice S* from 
 7. **這次學到的重點**：3–5 點。
 8. **待辦 / 風險 / 需要你決定的事**。
 
-## 6. 停
+## 6. 停，等使用者確認後合併
 - 更新 ROADMAP 的狀態
-- 等使用者確認後才 commit，commit 訊息格式為 `feat(<範圍>): <ID> <摘要>`
+- 任務一開始就從最新的 `main` 開分支：`task/<ID>-<簡稱>`
+- **在對話裡列出所有改動**：`git diff --stat`，以及每個檔案改了什麼，然後停下來等使用者確認
+- 使用者確認後，**直接完成整個合併流程**，不需要使用者到 GitHub 上操作：
+  1. commit，訊息格式為 `feat(<範圍>): <ID> <摘要> [REQ-xxx]`
+  2. push，並用 `gh pr create` 開 PR，PR 內容要附上任務報告的連結
+  3. 如果 CI 存在，等 CI 通過；CI 失敗就修好，不能硬合併
+  4. 用 `gh pr merge --squash --delete-branch` 合併，讓一個任務在 `main` 上只有一個 commit
+  5. `git checkout main && git pull`，把本機同步到最新
+  6. 回報 PR 連結和合併結果
+- 使用者沒有確認就不能合併；使用者要求修改時，改完再列出一次改動
 - **不要自動開始下一個任務**
