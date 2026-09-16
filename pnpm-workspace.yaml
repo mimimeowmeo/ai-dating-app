@@ -1,0 +1,4 @@
+# Node packages in this monorepo. Python services under services/ are managed by uv, not pnpm.
+packages:
+  - "apps/*"
+  - "packages/*"
