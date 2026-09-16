@@ -34,4 +34,5 @@
 | D25 | 改動大小 | 每個任務最多 5 個手寫檔案、約 300 行 | ✅ | 方便檢查、追溯，也方便還原。 |
 | D26 | Lint / 格式化 | TypeScript 全部使用 **Biome**（不用 ESLint + Prettier）；Python 使用 ruff | ✅ | 一個工具同時負責 lint 和格式化，速度快、設定少；Next.js 官方也支援。 |
 | D27 | 供應鏈安全 | 保留 pnpm 的 `minimumReleaseAge`（發布未滿 1 天的版本不安裝），**不加例外** | ✅ | 防止安裝到剛被植入惡意程式碼的新版本。需要最新版時，就等一天。 |
+| D28 | 嚴格型別 | 不能用 `any`。TypeScript：根目錄的 `tsconfig.base.json` 開啟 strict，另外加上 `noUncheckedIndexedAccess`、`exactOptionalPropertyTypes` 等選項；Biome 把 `noExplicitAny`、`noImplicitAnyLet`、`noEvolvingTypes`、`noTsIgnore`、`noNonNullAssertion` 設為 error。Python：mypy strict 加上 ruff `ANN401`（F3 設定） | ✅ | 使用者要求；型別越嚴格，越早抓到 bug，重構也更安全。 |
 | D22 | 部署平台 | 還沒定 | 🟡 | 做到第 10 部分再討論；手機要能用相機和定位，所以必須是 HTTPS。 |

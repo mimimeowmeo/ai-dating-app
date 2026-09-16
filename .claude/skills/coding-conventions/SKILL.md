@@ -41,7 +41,13 @@ description: HeartLink coding rules — module boundaries, diff size limits, fil
   - service 負責業務邏輯
   - repository 負責資料庫存取
 - 能寫成純函式的邏輯就寫成純函式，並寫單元測試。
-- 不能用 `any`；外部輸入一律先用 Zod 或 Pydantic 驗證。
+- **嚴格型別（D28）**：
+  - TypeScript 不能用 `any`（包含隱含的 any）、`@ts-ignore`、非空斷言 `!`，這些都由 Biome 和 tsconfig 強制檢查。
+  - 型別不確定時用 `unknown`，再用型別守衛或 Zod 縮小範圍。
+  - 盡量少用 `as` 轉型；非用不可時，要加註解說明原因。
+  - 各子專案的 tsconfig 必須 `extends` 根目錄的 `tsconfig.base.json`，**不能關掉其中任何一個嚴格選項**。真的有套件不相容時，先停下來跟使用者討論。
+  - 外部輸入一律先用 Zod 或 Pydantic 驗證，包括 `JSON.parse`、`fetch`、環境變數、佇列 job 的資料。這些來源的型別本身就是 `any`，工具抓不到。
+  - Python：mypy `strict`，並禁止明確寫出的 `Any`（ruff 的 `ANN401`）。
 - 錯誤要用統一的錯誤格式 `{ code, message, details? }`，不能直接把例外丟給前端。
 
 ## 4. 命名
