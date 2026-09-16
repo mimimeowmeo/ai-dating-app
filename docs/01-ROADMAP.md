@@ -20,7 +20,7 @@
 |---|---|---|---|---|
 | D1 | F0 開發環境：Node 24、pnpm、uv、Python 3.12、git、GitHub | 0 | 052 | ✅ |
 | D1 | F1 Monorepo 骨架：pnpm workspace、Turborepo、.gitignore、.env.example | 0 | 052 | ✅ |
-| D1 | F2 Docker：Postgres（PostGIS + pgvector）→ Redis → MinIO，一次加一個 | 0, 4, 5 | — | ⬜ |
+| D1 | F2 Docker：Postgres（PostGIS + pgvector）→ Redis → SeaweedFS（取代 MinIO，D29），一次加一個 | 0, 4, 5 | — | ✅ |
 | D2 | F3 四個應用程式骨架：web / api / ai / ai-worker，都要有 `/health` | 0, 1, 3 | — | ⬜ |
 | D2 | F4 **佇列實驗**：NestJS 丟 job → Python worker 收到 → 回寫結果（驗證 D05） | 0, 3 | — | ⬜ |
 | D2 | F5 CI（GitHub Actions）、gitleaks 秘密掃描、Playwright 冒煙測試 | 9 | 052, 053 | ⬜ |
