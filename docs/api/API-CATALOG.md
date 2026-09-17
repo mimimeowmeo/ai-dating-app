@@ -37,7 +37,8 @@ AVATAR_REQUIRED → FACE_VERIFICATION_REQUIRED → PROFILE_REQUIRED → PREFEREN
 - 密碼：8–128 個字元，用 Argon2id 雜湊（D39）。
 - 登入或註冊成功後，session 會換新，回應裡會附上**新的** `csrfToken`。
 - ✅ **S1 已實作**（詳見 `apps/api/src/modules/auth/README.md`）。
-- 帳號名稱的格式規則要等你確認：**建議** 3–30 個字元，只能用小寫英文、數字、底線，不分大小寫。
+- 帳號名稱格式（D44，已確認）：3–30 個字元，只能用小寫英文、數字、底線，不分大小寫（一律存成小寫）。
+- session：閒置 7 天，或登入滿 30 天，就要重新登入（D44）。
 - 登入失敗 5 次鎖定 15 分鐘（D41，可以在設定檔修改）。
 
 ## ② 大頭貼（S2-API；🅐 AI-1）

@@ -39,8 +39,17 @@ export async function startAuthenticatedSession(req: Request, userId: string): P
   const token = newCsrfToken();
   req.session.userId = userId;
   req.session.csrfToken = token;
+  req.session.authenticatedAt = Date.now();
   await promisify((done) => req.session.save(done));
   return token;
+}
+
+export function isAuthenticationExpired(req: Request, env: Env, now = Date.now()): boolean {
+  const authenticatedAt = req.session.authenticatedAt;
+  if (authenticatedAt === undefined) {
+    return true;
+  }
+  return now - authenticatedAt > env.SESSION_ABSOLUTE_TTL_SECONDS * 1000;
 }
 
 export async function endSession(req: Request, res: Response, env: Env): Promise<void> {

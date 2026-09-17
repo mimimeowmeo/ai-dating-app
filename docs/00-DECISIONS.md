@@ -50,4 +50,5 @@
 | D41 | 登入與註冊流程 | 共用頁面：`POST /auth/continue`。帳號存在就驗證密碼；不存在就回 `signup_required`，**這時還不建立帳號**；使用者確認密碼後，再呼叫 `POST /auth/register`。登入失敗 **5 次鎖定 15 分鐘**（可以在設定檔修改） | ✅ | 使用者要求共用頁面。這個流程會讓人試出帳號是否存在，所以用限流、固定回應時間、不透露細節的錯誤訊息來降低風險（OWASP）。 |
 | D42 | 錯誤格式 | **RFC 9457** `application/problem+json`，另外加上 `code` 欄位（取代原本的 `{code,message,details}`） | ✅ | 正式標準，而且允許自訂欄位。 |
 | D43 | API 共通規範 | 分頁用 cursor；送訊息、按喜歡這類請求帶 `clientMessageId` 或 `Idempotency-Key`，避免重複處理；超過次數回 `429` + `Retry-After`；新手流程還沒完成時，配對和聊天的 API 回 `403 ONBOARDING_INCOMPLETE` | ✅ | 見 `docs/api/API-CATALOG.md`。 |
+| D44 | 絕對逾時與帳號格式 | session 除了閒置 7 天會失效，**從登入起算滿 30 天也一定要重新登入**（`SESSION_ABSOLUTE_TTL_SECONDS`，可以在設定檔修改）；帳號名稱格式**確認採用 A**：3–30 個字元，只能用小寫英文、數字、底線，不分大小寫 | ✅ | 使用者決定；OWASP Session Management 建議同時設定閒置逾時和絕對逾時。 |
 | D22 | 部署平台 | 還沒定 | 🟡 | 做到第 10 部分再討論；手機要能用相機和定位，所以必須是 HTTPS。 |

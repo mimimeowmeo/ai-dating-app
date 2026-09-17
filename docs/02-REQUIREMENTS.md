@@ -15,7 +15,7 @@
 | REQ-004 | 可以選擇偏好標籤（興趣、運動、美食、旅遊），標籤來自固定字典，並有同義詞規則 | P0 | B | 單元測試：標籤正規化 |
 | REQ-005 | 星座和 MBTI 為選填，不參與相容性判斷 | P2 | B | code review |
 | REQ-006 | 密碼最短 8 個字元、最長至少 64 個字元，用 Argon2id 雜湊（D39） | P0 | 使用者/OWASP | 單元測試 |
-| REQ-007 | 登入錯誤訊息不透露細節；登入失敗 5 次鎖定 15 分鐘；登入後更換 session ID；session cookie 必須是 HttpOnly、Secure、SameSite | P0 | OWASP | e2e 測試 |
+| REQ-007 | 登入錯誤訊息不透露細節；登入失敗 5 次鎖定 15 分鐘；登入後更換 session ID；session 閒置 7 天或登入滿 30 天就失效（D44）；session cookie 必須是 HttpOnly、Secure、SameSite | P0 | OWASP | e2e 測試 |
 | REQ-008 | 預留 `email` 欄位，之後可以改成 email 登入或驗證 | P2 | 使用者 | 檢查資料表 |
 | REQ-009 | 新手流程依序是：大頭貼 → 人臉驗證 → 基本資料 → 興趣；沒完成之前，不能使用配對和聊天（D43） | P0 | 使用者 | e2e 測試 |
 

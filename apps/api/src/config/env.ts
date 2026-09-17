@@ -11,6 +11,11 @@ export const envSchema = z.object({
     .int()
     .positive()
     .default(60 * 60 * 24 * 7),
+  SESSION_ABSOLUTE_TTL_SECONDS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(60 * 60 * 24 * 30),
   COOKIE_SECURE: z.stringbool().default(true),
   AUTH_LOCKOUT_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
   AUTH_LOCKOUT_SECONDS: z.coerce
