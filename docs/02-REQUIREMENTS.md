@@ -2,28 +2,33 @@
 
 每個任務的 checklist 都要標明對應的 REQ 編號，確保每一條需求都被實作，也都被驗證過。
 優先順序：**P0** = MVP 必交，**P1** = 時間夠就做，**P2** = 之後再做。
+🅐 = **AI 階段**才實作（D37），在那之前只預留介面。
 來源：A = Codex 文件，B = 老師規格。
 
 ## 帳號與個人資料
 
 | ID | 需求 | 優先 | 來源 | 驗證方式 |
 |---|---|---|---|---|
-| REQ-001 | 使用 Email 和密碼註冊、登入、登出 | P0 | A/B | API 整合測試 + E2E |
+| REQ-001 | 用**帳號名稱**和密碼註冊、登入、登出；登入和註冊**共用同一個頁面**（D38、D41） | P0 | A/B/使用者 | API 整合測試 + E2E |
 | REQ-002 | 可以編輯個人資料（名稱、生日、性別、自介、地區） | P0 | A/B | API 測試 + E2E |
 | REQ-003 | 可以設定配對條件（年齡範圍、性別、公里半徑） | P0 | A/B | API 測試 |
 | REQ-004 | 可以選擇偏好標籤（興趣、運動、美食、旅遊），標籤來自固定字典，並有同義詞規則 | P0 | B | 單元測試：標籤正規化 |
 | REQ-005 | 星座和 MBTI 為選填，不參與相容性判斷 | P2 | B | code review |
+| REQ-006 | 密碼最短 8 個字元、最長至少 64 個字元，用 Argon2id 雜湊（D39） | P0 | 使用者/OWASP | 單元測試 |
+| REQ-007 | 登入錯誤訊息不透露細節；登入失敗 5 次鎖定 15 分鐘；登入後更換 session ID；session cookie 必須是 HttpOnly、Secure、SameSite | P0 | OWASP | e2e 測試 |
+| REQ-008 | 預留 `email` 欄位，之後可以改成 email 登入或驗證 | P2 | 使用者 | 檢查資料表 |
+| REQ-009 | 新手流程依序是：大頭貼 → 人臉驗證 → 基本資料 → 興趣；沒完成之前，不能使用配對和聊天（D43） | P0 | 使用者 | e2e 測試 |
 
 ## 自拍頭貼與人臉
 
 | ID | 需求 | 優先 | 來源 | 驗證方式 |
 |---|---|---|---|---|
-| REQ-010 | 手機可以用前鏡頭拍照，或從相簿上傳（JPG、PNG、HEIC） | P0 | B | 手機實測 + E2E（上傳） |
-| REQ-011 | 前端先檢查檔案格式和大小 | P0 | B | 單元測試 |
-| REQ-012 | 後端做品質檢查：必須剛好一張臉，並檢查臉部比例、清晰度、角度、遮擋；不合格時回傳明確的重拍原因 | P0 | B | pytest + 測試圖片集 |
-| REQ-013 | 人臉對齊、裁切後產生 Embedding，並記錄模型版本 | P0 | A/B | pytest |
+| REQ-010 | 手機可以用前鏡頭拍照，或從相簿上傳（JPG、PNG、HEIC）；**只有第一次登入時會要求上傳** | P0 | B/使用者 | 手機實測 + E2E（上傳） |
+| REQ-011 | 前端先檢查檔案格式和大小；後端也要檢查檔頭和大小，**重新編碼圖片並刪除 EXIF**（照片裡可能有 GPS 座標） | P0 | B/OWASP | 單元測試 + 整合測試 |
+| REQ-012 | 🅐 **（AI 階段）** 後端做品質檢查：必須剛好一張臉，並檢查臉部比例、清晰度、角度、遮擋；不合格時回傳明確的重拍原因 | P0 | B | pytest + 測試圖片集 |
+| REQ-013 | 🅐 **（AI 階段）** 人臉對齊、裁切後產生 Embedding，並記錄模型版本 | P0 | A/B | pytest |
 | REQ-014 | 更換或刪除頭貼時，對應的 Embedding 也要同步更新或刪除 | P0 | B | 整合測試 |
-| REQ-015 | Liveness 防偽 / 真人驗證，並留下驗證紀錄（分數、模型、原因代碼） | P1 | A | pytest + 翻拍照片測試 |
+| REQ-015 | 🅐 **（AI 階段）** 即時人臉驗證：活體偵測 + 跟大頭貼比對，只回傳「通過／失敗／重試」，並留下驗證紀錄（分數、模型、原因代碼）；AI 完成前，這一步自動略過，並標記為 `pending_ai` | P1 | A/使用者 | pytest + 翻拍照片測試 |
 | REQ-016 | 使用者可以關閉視覺篩選（Stage 1） | P0 | B | API 測試 |
 
 ## GPS 與距離
@@ -42,15 +47,15 @@
 | ID | 需求 | 優先 | 來源 | 驗證方式 |
 |---|---|---|---|---|
 | REQ-030 | 先做硬篩選：年齡、性別、封鎖名單、帳號狀態、距離 | P0 | A/B | 整合測試 |
-| REQ-031 | Stage 1：用人臉 cosine similarity 算出 FaceScore，取 Top-K | P0 | B | pytest |
-| REQ-032 | Stage 2：偏好 multi-hot 向量 + k-Means 算出 ClusterScore，並用 Elbow 或 Silhouette 評估 k 值 | P0 | B | pytest + 評估報告 |
-| REQ-033 | Stage 3：聊天語意 SemanticScore，有最低門檻，並用批次更新 | P1 | B | pytest + 測試集 F1 |
+| REQ-031 | 🅐 Stage 1：用人臉 cosine similarity 算出 FaceScore，取 Top-K | P0 | B | pytest |
+| REQ-032 | 🅐 Stage 2：偏好 multi-hot 向量 + k-Means 算出 ClusterScore，並用 Elbow 或 Silhouette 評估 k 值 | P0 | B | pytest + 評估報告 |
+| REQ-033 | 🅐 Stage 3：聊天語意 SemanticScore，有最低門檻，並用批次更新 | P1 | B | pytest + 測試集 F1 |
 | REQ-034 | 排序：`Final = Σ w·score`；冷啟動時 w3 = 0 並重新正規化 | P0 | B | 單元測試 |
 | REQ-035 | Stage 1、2、3 可以分別開關，每個階段的分數都要記錄 | P0 | B | API 測試 + 資料表檢查 |
 | REQ-036 | 候選人卡片顯示大約距離、共同偏好、推薦原因 | P0 | B | E2E |
 | REQ-037 | 沒有偏好人臉時跳過 Stage 1；偏好資料不足時，提示使用者補充，並用保守的方式推薦 | P0 | B | 單元測試 |
 | REQ-038 | 離線評估：Precision@K、NDCG@K，並和固定權重的 baseline 比較 | P1 | B | 評估報告 |
-| REQ-039 | 多個模型比較或 ensemble，選出最佳（見 D13） | P1 | 使用者 | MLflow 紀錄 |
+| REQ-039 | 🅐 多個模型比較或 ensemble，選出最佳（見 D13） | P1 | 使用者 | MLflow 紀錄 |
 
 ## 互動與聊天
 
@@ -72,5 +77,6 @@
 | REQ-053 | CI：lint、typecheck、test、build | P0 | A | GitHub Actions 通過 |
 | REQ-054 | 介面上要說明「推薦只是輔助，不代表真實的相容性」 | P0 | B | E2E |
 | REQ-055 | Demo 情境：冷啟動、同好分群、累積對話後重排、資料不足 | P0 | B | Demo 腳本 |
-| REQ-056 | RAG / MCP（用途待定） | P1 | 使用者 | 待定 |
+| REQ-056 | 🅐 RAG / MCP：**推薦下一句聊天內容**（其餘用途待定） | P1 | 使用者 | 待定 |
 | REQ-057 | 部署成可以公開存取的 HTTPS Demo | P0 | 使用者 | 手機實測 |
+| REQ-058 | 🅐 AI 功能先定義介面、放 stub（`AI_ENABLED=false`）；還沒經過 AI 檢查的資料標記為 `pending_ai`（D37） | P0 | 使用者 | 單元測試 |
