@@ -22,7 +22,7 @@
 | D1 | F1 Monorepo 骨架：pnpm workspace、Turborepo、.gitignore、.env.example | 0 | 052 | ✅ |
 | D1 | F2 Docker：Postgres（PostGIS + pgvector）→ Redis → SeaweedFS（取代 MinIO，D29），一次加一個 | 0, 4, 5 | — | ✅ |
 | D2 | F3 四個應用程式骨架（拆分計畫見 `docs/tasks/F3-plan.md`） | 0, 1, 3 | — | 🔄 |
-| D2 | └ F3a api：NestJS 12 骨架 + `/api/v1/health` | 3 | — | ⬜ |
+| D2 | └ F3a api：NestJS 12 骨架 + `/api/v1/health` | 3 | — | ✅ |
 | D2 | └ F3b ai：uv workspace + FastAPI 骨架 + `/health` | 3, 7 | — | ⬜ |
 | D2 | └ F3c ai-worker：Python worker 骨架 + Redis 心跳健康檢查 | 3, 7 | — | ⬜ |
 | D2 | └ F3d web：Next.js 16 骨架 + `/api/health` | 1, 2 | — | ⬜ |

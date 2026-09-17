@@ -26,6 +26,9 @@
       },
       "style": {
         "noNonNullAssertion": "error"
+      },
+      "complexity": {
+        "useLiteralKeys": "off"
       }
     }
   },
@@ -41,5 +44,22 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["apps/api/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useImportType": "off"
+          }
+        }
+      },
+      "javascript": {
+        "parser": {
+          "unsafeParameterDecoratorsEnabled": true
+        }
+      }
+    }
+  ]
 }
