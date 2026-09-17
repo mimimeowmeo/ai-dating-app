@@ -1,17 +1,12 @@
 import type { INestApplication } from "@nestjs/common";
-import { Test } from "@nestjs/testing";
 import request from "supertest";
-import { AppModule } from "../src/app.module.js";
-import { setupApp } from "../src/setup-app.js";
+import { createTestApp } from "./support/test-app.js";
 
 describe("GET /api/v1/health (e2e)", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    app = moduleRef.createNestApplication();
-    setupApp(app);
-    await app.init();
+    app = await createTestApp();
   });
 
   afterAll(async () => {
@@ -27,5 +22,18 @@ describe("GET /api/v1/health (e2e)", () => {
   it("does not serve health without the /api/v1 prefix", async () => {
     const res = await request(app.getHttpServer()).get("/health");
     expect(res.status).toBe(404);
+  });
+
+  it("answers unknown API routes with an RFC 9457 404", async () => {
+    const res = await request(app.getHttpServer()).get("/api/v1/does-not-exist");
+    expect(res.status).toBe(404);
+    expect(res.headers["content-type"]).toContain("application/problem+json");
+    expect(res.body).toMatchObject({ status: 404, code: "NOT_FOUND" });
+  });
+
+  it("reports readiness of database and redis", async () => {
+    const res = await request(app.getHttpServer()).get("/api/v1/health/ready");
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ status: "ok", checks: { database: "ok", redis: "ok" } });
   });
 });

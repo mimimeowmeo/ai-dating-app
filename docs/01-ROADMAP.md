@@ -28,11 +28,11 @@
 
 | 任務 | 內容 | 相關部分 | REQ | 狀態 |
 |---|---|---|---|---|
-| **S1-a** | 設定和錯誤格式：用 Zod 驗證環境變數、RFC 9457 錯誤格式（D42） | 3 | 052 | ⬜ |
-| **S1-b** | 資料庫：Drizzle + `users` 資料表 + migration + `/health/ready`、Testcontainers | 3, 4 | 001, 008 | ⬜ |
-| **S1-c** | session：Redis + `express-session` + `connect-redis`、cookie 設定、CSRF（D40） | 3 | 007 | ⬜ |
-| **S1-d** | 帳號：`/auth/continue`、`/auth/register`、`/auth/logout`、`/me`、Argon2id（D38、D39、D41） | 3, 4 | 001, 006, 007, 009 | ⬜ |
-| **S1-e** | 限流和鎖定：`@nestjs/throttler` + 存在 Redis；失敗 5 次鎖定 15 分鐘 | 3 | 007 | ⬜ |
+| **S1-a** | 設定和錯誤格式：用 Zod 驗證環境變數、RFC 9457 錯誤格式（D42） | 3 | 052 | ✅ |
+| **S1-b** | 資料庫：Drizzle + `users` 資料表 + migration + `/health/ready`、Testcontainers | 3, 4 | 001, 008 | ✅ |
+| **S1-c** | session：Redis + `express-session` + `connect-redis`、cookie 設定、CSRF（D40） | 3 | 007 | ✅ |
+| **S1-d** | 帳號：`/auth/continue`、`/auth/register`、`/auth/logout`、`/me`、Argon2id（D38、D39、D41） | 3, 4 | 001, 006, 007, 009 | ✅ |
+| **S1-e** | 限流和鎖定：失敗 5 次鎖定 15 分鐘 ✅；IP 限流（`@nestjs/throttler` 6.6 發布滿一天後再加）⬜ | 3 | 007 | 🔄 |
 | S2-API | 大頭貼上傳（**不含 AI**）：multipart → 檢查檔頭 → 重新編碼、刪除 EXIF → S3；`AiGateway` stub（D37） | 3, 4 | 010, 011, 014, 058 | ⬜ |
 | S3-API | 人臉驗證步驟：**預留**（自動略過並標記 `pending_ai`）；新手流程的權限檢查 | 3 | 009, 015, 058 | ⬜ |
 | S4-API | 基本資料 + 標籤字典 + 自己的標籤（**欄位等你提供 CSV**） | 3, 4 | 002–005 | ⬜ |
