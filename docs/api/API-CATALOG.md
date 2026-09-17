@@ -28,12 +28,15 @@ AVATAR_REQUIRED → FACE_VERIFICATION_REQUIRED → PROFILE_REQUIRED → PREFEREN
 
 | Method | Path | 登入 | 說明 |
 |---|---|---|---|
-| POST | `/auth/continue` | ✗ | 共用登入頁。body：`{ username, password }`。帳號存在且密碼正確 → `200 { result: "logged_in", onboardingStep }`，並設定 cookie；密碼錯誤或帳號被鎖 → `401`，**訊息一律寫「帳號或密碼錯誤」**；帳號不存在 → `200 { result: "signup_required" }`，**這時還不建立帳號** |
-| POST | `/auth/register` | ✗ | body：`{ username, password, passwordConfirm }` → `201 { onboardingStep: "AVATAR_REQUIRED" }`，並直接登入；帳號已被使用 → `409 USERNAME_TAKEN` |
-| POST | `/auth/logout` | ✓ | 清除 session → `204` |
+| GET | `/auth/csrf` | ✗ | 取得 CSRF token（同時建立預備 session）。之後所有 POST、PUT、PATCH、DELETE 都要在 `x-csrf-token` header 帶上它 |
+| POST | `/auth/continue` | ✗ | 共用登入頁。body：`{ username, password }`。帳號存在且密碼正確 → `200 { result: "logged_in", onboardingStep, csrfToken }`，並換新 session；密碼錯誤或帳號被鎖 → `401`，**訊息一律寫「帳號或密碼錯誤」**；帳號不存在 → `200 { result: "signup_required" }`，**這時還不建立帳號** |
+| POST | `/auth/register` | ✗ | body：`{ username, password, passwordConfirm }` → `201 { onboardingStep: "AVATAR_REQUIRED", csrfToken }`，並直接登入；帳號已被使用 → `409 USERNAME_TAKEN` |
+| POST | `/auth/logout` | ✗ | 清除 session → `204`（沒有登入時也回 204） |
 | GET | `/me` | ✓ | `{ id, username, onboardingStep, verificationStatus }` |
 
 - 密碼：8–128 個字元，用 Argon2id 雜湊（D39）。
+- 登入或註冊成功後，session 會換新，回應裡會附上**新的** `csrfToken`。
+- ✅ **S1 已實作**（詳見 `apps/api/src/modules/auth/README.md`）。
 - 帳號名稱的格式規則要等你確認：**建議** 3–30 個字元，只能用小寫英文、數字、底線，不分大小寫。
 - 登入失敗 5 次鎖定 15 分鐘（D41，可以在設定檔修改）。
 

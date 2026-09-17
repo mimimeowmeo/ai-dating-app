@@ -8,7 +8,7 @@
 | `01-frontend-layout.md` | 前端 layout | S1 之前 |
 | `02-frontend-logic.md` | 前端邏輯 | S1 之前 |
 | `03-backend-api.md` | 後端 API（NestJS + FastAPI） | ✅ 已完成（F3 之前） |
-| `04-database.md` | 資料庫 | F6 之前（配合 CSV） |
+| `04-database.md` | 資料庫（PostgreSQL + Drizzle） | ✅ 已完成（S1；S4 之前會依 CSV 補充） |
 | `05-vector-db.md` | 向量資料庫 | F6 之前 |
 | `06-ai-training.md` | 模型訓練 | S8 之前（**要先討論**） |
 | `07-ai-third-party.md` | 第三方模型 | S3 之前（**要先討論**） |
