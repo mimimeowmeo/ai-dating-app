@@ -13,7 +13,7 @@
 api（NestJS）
    ├── PostgreSQL（PostGIS + pgvector）  ← Drizzle
    ├── Redis（BullMQ、快取、限流）
-   ├── MinIO / S3（自拍照片）
+   ├── S3 API：本機 SeaweedFS／正式環境 S3 相容服務（自拍照片，D29）
    ├── ai（FastAPI）          ← 同步 HTTP 呼叫：品質檢查、人臉、排序
    └── BullMQ ──► ai-worker（Python）← 非同步：分群、語意分析、重新計算特徵
                         └── MLflow（實驗紀錄、模型版本）
@@ -26,7 +26,7 @@ api（NestJS）
 | ai | `services/ai` | 同步推論：影像品質、人臉 Embedding、liveness、排序打分 |
 | ai-worker | `services/ai-worker` | 非同步工作：k-Means、語意分析、重新計算特徵、評估 |
 | postgres | `infrastructure/postgres` | 所有業務資料和向量資料 |
-| redis / minio / nginx / mlflow | `infrastructure/*` | 基礎設施 |
+| redis / seaweedfs / nginx / mlflow | `docker-compose.yml`、`infrastructure/*` | 基礎設施 |
 
 ## 2. 推薦流程（`GET /discovery`）
 
