@@ -35,7 +35,7 @@
 | 錯誤訊息 | 密碼錯誤、帳號鎖定、帳號停用，一律回「帳號或密碼錯誤」 | OWASP Authentication |
 | 回應時間 | 帳號不存在或鎖定時，也做一次假的 Argon2 驗證 | OWASP Authentication |
 | 帳號鎖定 | 以帳號為單位計算，失敗 5 次鎖定 15 分鐘（可以設定） | OWASP Authentication、D41 |
-| Session | 存在 Redis；cookie 設定 `HttpOnly`、`SameSite=Strict`，正式環境再加 `Secure` 和 `__Host-` 前綴；閒置 7 天後失效 | OWASP Session Management、D40 |
+| Session | 存在 Redis；cookie 設定 `HttpOnly`、`SameSite=Strict`，正式環境再加 `Secure` 和 `__Host-` 前綴；閒置 7 天後失效；**登入滿 30 天一定要重新登入**（`SessionAuthGuard` 檢查，D44） | OWASP Session Management、D40 |
 | Session fixation | 登入或註冊成功時用 `regenerate()` 換一個新的 session ID | OWASP Session Management |
 | CSRF | synchronizer token（存在 session）+ 拒絕 `Sec-Fetch-Site: cross-site`；登入表單也受到保護（預備 session） | OWASP CSRF Prevention |
 | Log | 資料庫錯誤不記錄查詢參數（`describeForLog`） | 避免密碼雜湊外洩 |

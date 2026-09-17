@@ -350,12 +350,12 @@ Set-Cookie: sid=<redacted>; Path=/; Expires=…; HttpOnly; SameSite=Strict
 |---|---|---|---|
 | 1 | IP 限流 | 等 `@nestjs/throttler` 6.6 發布滿一天（D27） | S1-e 後半 |
 | 2 | ⚠️ 預備 session 可能被灌爆 | 任何人都能一直呼叫 `GET /auth/csrf`，每次都會在 Redis 建立一筆 session（保留 7 天）。要靠 IP 限流來擋，並把預備 session 的保存時間縮短 | S1-e 後半 |
-| 3 | ⚠️ 沒有絕對逾時 | 目前只有「閒置 7 天」；OWASP 建議再加上絕對逾時（例如 30 天後一定要重新登入） | **需要你決定** |
-| 4 | 帳號名稱的格式 | 目前用建議的「3–30 個字元，小寫英數或底線」，還沒得到你的確認 | **需要你決定** |
+| 3 | ~~沒有絕對逾時~~ | ✅ 已決定並實作：30 天（D44，見 `docs/tasks/S1-f.md`） | 已完成 |
+| 4 | ~~帳號名稱的格式~~ | ✅ 已確認採用 A（D44） | 已完成 |
 | 5 | CORS | 前端要怎麼呼叫 api（同源代理或 CORS 白名單） | F3d |
 | 6 | `trust proxy` 和 Secure cookie | 正式環境在 Nginx 後面時要設定 | S11 |
 | 7 | CI 要先 build Postgres 映像 | Testcontainers 用的是本機 build 的 `heartlink/postgres` | F5 |
-| 8 | 示範帳號 `demo_user` | 不需要的話可以刪掉 | 你決定 |
+| 8 | ~~示範帳號 `demo_user`~~ | ✅ 已經刪除（連同它在 Redis 的 session） | 已完成 |
 
 ---
 

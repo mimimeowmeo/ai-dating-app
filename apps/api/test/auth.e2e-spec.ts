@@ -236,5 +236,32 @@ describe("auth (e2e)", () => {
       const token = await csrf(agent);
       await agent.post("/api/v1/auth/logout").set("x-csrf-token", token).expect(204);
     });
+
+    it("forces a new login once the session is older than 30 days", async () => {
+      const agent = newAgent();
+      const registered = await register(agent, "old_session");
+      expect(registered.status).toBe(201);
+      await agent.get("/api/v1/me").expect(200);
+
+      const raw = decodeURIComponent(
+        sidCookie(registered)?.split(";")[0]?.slice("sid=".length) ?? "",
+      );
+      const sessionId = raw.slice("s:".length, raw.lastIndexOf("."));
+      const key = `heartlink:sess:${sessionId}`;
+
+      const redis = await createClient({ url: inject("redisUrl") }).connect();
+      try {
+        const stored = JSON.parse((await redis.get(key)) ?? "{}") as Record<string, unknown>;
+        stored["authenticatedAt"] = Date.now() - 31 * 24 * 60 * 60 * 1000;
+        await redis.set(key, JSON.stringify(stored), { KEEPTTL: true });
+
+        const expired = await agent.get("/api/v1/me");
+        expect(expired.status).toBe(401);
+        expect(expired.body.code).toBe("UNAUTHENTICATED");
+        expect(await redis.exists(key)).toBe(0);
+      } finally {
+        await redis.close();
+      }
+    });
   });
 });
