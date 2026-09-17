@@ -24,7 +24,7 @@
 | D14 | 實驗追蹤 | MLflow | 🟡 | 用來比較多個模型，並管理模型版本。 |
 | D15 | API 格式 | NestJS 和 FastAPI 都產生 OpenAPI 文件，再用 orval 產生 TypeScript client | ✅ | 兩種語言之間的格式要能自動檢查。 |
 | D16 | Monorepo | pnpm workspace + Turborepo；Python 用 uv | ✅ | |
-| D17 | 測試 | Vitest（web）、Jest（Nest 預設）、pytest、Testcontainers、Playwright、MSW | ✅ | 每一部分做完就寫測試，不等到最後。 |
+| D17 | 測試 | Vitest（web、api；原本的 Jest 由 D33 改掉）、pytest、Testcontainers、Playwright、MSW | ✅ | 每一部分做完就寫測試，不等到最後。 |
 | D18 | 程式碼倉庫 | GitHub **公開** repo | ✅ | 所以 `data/`、`.env` 一律不能 commit。 |
 | D19 | 不採用 | RabbitMQ、Kafka、Kubernetes、獨立向量資料庫、太早做監控 | ✅ | 規模用不到。 |
 | D20 | 星座 / MBTI | 只當選填偏好，不宣稱能科學判定相容性 | ✅ | B 的規定。 |
@@ -38,4 +38,9 @@
 | D29 | 物件儲存 | 用 **SeaweedFS 4.46** 取代 MinIO：本機用 `mini` 模式，透過 S3 API 存取 | ✅ | MinIO 在 2025-10 停止發布社群版映像，2026-02 封存 repo。SeaweedFS 採用 Apache-2.0 授權、維護活躍、支援 arm64、與 S3 相容。程式一律透過 S3 SDK 存取，之後換成 AWS S3 或其他服務時，只要改 endpoint。 |
 | D30 | Postgres 映像 | 以 `pgvector/pgvector:0.8.6-pg18-trixie` 為基礎，再用 apt 安裝 PostGIS 3（PostgreSQL 18.6、PostGIS 3.6.4） | ✅ | `postgis/postgis` 只有 amd64 版本，在 Apple Silicon 上要靠模擬器執行。 |
 | D31 | 本機 port | Postgres 用 5433、Redis 用 6380、S3 用 8333、S3 管理介面用 23646，全部只綁定 127.0.0.1 | ✅ | 避開本機其他專案占用的 5432、6379，並且不對區域網路開放。 |
+| D32 | TypeScript 版本 | 全專案固定用 **TypeScript 6.0.3** | ✅ | TS 7.0 還沒有提供給工具呼叫的 API（官方公告），NestJS CLI 和各種 loader 只能用 6.0；型別檢查結果跟 7.0 相同。等 7.1 推出、工具支援之後再升級。 |
+| D33 | api 技術棧 | NestJS 12 + ESM + Express adapter + Vitest + Biome | ✅ | 前三項是 NestJS 12 新專案的預設；Biome 依照 D26（取代 NestJS 預設的 oxlint）。 |
+| D34 | worker 健康檢查 | Redis 心跳 + Docker exec 檢查指令，不另外開 HTTP port | ✅ | 背景 worker 沒有 HTTP 服務，用指令檢查是業界常見做法。 |
+| D35 | 應用程式容器 | 放在 compose 的 `apps` profile；平常開發時，應用程式直接在 Mac 上執行 | ✅ | 保留熱更新；需要時用 `--profile apps` 就能全部跑在容器裡。 |
+| D36 | Python monorepo | uv workspace：根目錄的 `pyproject.toml`，成員是 `services/*`，共用一個 `uv.lock` | ✅ | 概念跟 pnpm workspace 一樣。 |
 | D22 | 部署平台 | 還沒定 | 🟡 | 做到第 10 部分再討論；手機要能用相機和定位，所以必須是 HTTPS。 |

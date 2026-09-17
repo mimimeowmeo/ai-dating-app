@@ -4,10 +4,10 @@
 
 | 檔案 | 部分 | 什麼時候寫 |
 |---|---|---|
-| `00-docker.md` | Docker | F2 之前 |
+| `00-docker.md` | Docker | ✅ 已完成（F2） |
 | `01-frontend-layout.md` | 前端 layout | S1 之前 |
 | `02-frontend-logic.md` | 前端邏輯 | S1 之前 |
-| `03-backend-api.md` | 後端 API | F3 之前 |
+| `03-backend-api.md` | 後端 API（NestJS + FastAPI） | ✅ 已完成（F3 之前） |
 | `04-database.md` | 資料庫 | F6 之前（配合 CSV） |
 | `05-vector-db.md` | 向量資料庫 | F6 之前 |
 | `06-ai-training.md` | 模型訓練 | S8 之前（**要先討論**） |
