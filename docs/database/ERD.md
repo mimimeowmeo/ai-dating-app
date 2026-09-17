@@ -34,6 +34,16 @@ feature_flags / model_versions
 
 ## 主要資料表（欄位草稿）
 
+### users（S1-API 會先建立這張表）
+- `id` uuid PK
+- `username` text：**不能重複，不分大小寫**（一律存成小寫）
+- `email` text，可以是 null，不能重複：**預留**（D38）
+- `password_hash` text：Argon2id（D39）
+- `status`：active / locked / deleted
+- `onboarding_step`：AVATAR_REQUIRED / FACE_VERIFICATION_REQUIRED / PROFILE_REQUIRED / PREFERENCES_REQUIRED / COMPLETED（S1-d 會決定這個值要存在表裡，還是每次計算）
+- `created_at`、`updated_at`、`deleted_at`
+- 登入失敗次數和鎖定狀態存在 **Redis**，不存在這張表
+
 ### user_locations
 - `user_id` PK/FK
 - `geog geography(Point,4326)`，建 GIST 索引

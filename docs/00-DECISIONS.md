@@ -43,4 +43,11 @@
 | D34 | worker 健康檢查 | Redis 心跳 + Docker exec 檢查指令，不另外開 HTTP port | ✅ | 背景 worker 沒有 HTTP 服務，用指令檢查是業界常見做法。 |
 | D35 | 應用程式容器 | 放在 compose 的 `apps` profile；平常開發時，應用程式直接在 Mac 上執行 | ✅ | 保留熱更新；需要時用 `--profile apps` 就能全部跑在容器裡。 |
 | D36 | Python monorepo | uv workspace：根目錄的 `pyproject.toml`，成員是 `services/*`，共用一個 `uv.lock` | ✅ | 概念跟 pnpm workspace 一樣。 |
+| D37 | AI 延後實作 | **先完成前後端，AI 功能最後才做**（人臉品質、活體偵測、推薦模型、推薦下一句）。先定義 `AiGateway` 介面，放一個 stub 實作，用 `AI_ENABLED=false` 開關控制；還沒經過 AI 檢查的資料標記為 `pending_ai`，**不能標記成「已通過」** | ✅ | 使用者決定。其他模組現在就能照最終流程寫，之後只要換掉實作。 |
+| D38 | 登入帳號 | 目前用**自訂帳號名稱（username）**登入；`users.email` 欄位先預留（可以是 null、不能重複），之後可以改成用 email 登入或驗證 | ✅ | 使用者決定。預留欄位，之後改 email 時不用大改資料表。 |
+| D39 | 密碼政策 | 最短 **8** 個字元，最長至少允許 64 個字元；用 **Argon2id** 雜湊 | ✅ | 使用者決定用 8。風險紀錄：OWASP 認為沒有多因素驗證時，短於 15 個字元算弱密碼，所以用限流和鎖定來補強。 |
+| D40 | 登入狀態 | **Redis session** + `HttpOnly; Secure; SameSite` cookie（`express-session` + `connect-redis`）；登入後更換 session ID；加上 CSRF 防護 | ✅ | OWASP Session Management 的建議；可以隨時讓 session 失效；Socket.IO 可以沿用同一個 cookie。 |
+| D41 | 登入與註冊流程 | 共用頁面：`POST /auth/continue`。帳號存在就驗證密碼；不存在就回 `signup_required`，**這時還不建立帳號**；使用者確認密碼後，再呼叫 `POST /auth/register`。登入失敗 **5 次鎖定 15 分鐘**（可以在設定檔修改） | ✅ | 使用者要求共用頁面。這個流程會讓人試出帳號是否存在，所以用限流、固定回應時間、不透露細節的錯誤訊息來降低風險（OWASP）。 |
+| D42 | 錯誤格式 | **RFC 9457** `application/problem+json`，另外加上 `code` 欄位（取代原本的 `{code,message,details}`） | ✅ | 正式標準，而且允許自訂欄位。 |
+| D43 | API 共通規範 | 分頁用 cursor；送訊息、按喜歡這類請求帶 `clientMessageId` 或 `Idempotency-Key`，避免重複處理；超過次數回 `429` + `Retry-After`；新手流程還沒完成時，配對和聊天的 API 回 `403 ONBOARDING_INCOMPLETE` | ✅ | 見 `docs/api/API-CATALOG.md`。 |
 | D22 | 部署平台 | 還沒定 | 🟡 | 做到第 10 部分再討論；手機要能用相機和定位，所以必須是 HTTPS。 |

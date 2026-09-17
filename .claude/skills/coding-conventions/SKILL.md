@@ -48,7 +48,7 @@ description: HeartLink coding rules — module boundaries, diff size limits, fil
   - 各子專案的 tsconfig 必須 `extends` 根目錄的 `tsconfig.base.json`，**不能關掉其中任何一個嚴格選項**。真的有套件不相容時，先停下來跟使用者討論。
   - 外部輸入一律先用 Zod 或 Pydantic 驗證，包括 `JSON.parse`、`fetch`、環境變數、佇列 job 的資料。這些來源的型別本身就是 `any`，工具抓不到。
   - Python：mypy `strict`，並禁止明確寫出的 `Any`（ruff 的 `ANN401`）。
-- 錯誤要用統一的錯誤格式 `{ code, message, details? }`，不能直接把例外丟給前端。
+- 錯誤一律用 **RFC 9457** `application/problem+json` 格式（`type`、`title`、`status`、`detail`，再加上大寫蛇形的 `code`），不能直接把例外丟給前端（D42）。
 
 ## 4. 命名
 
